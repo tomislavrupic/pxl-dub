@@ -1,6 +1,6 @@
 async (page) => {
  const check=(ok,message)=>{if(!ok)throw Error(message)};
- await page.reload();await page.waitForFunction(()=>document.documentElement.dataset.ready==='true');
+ if(!page.url().startsWith('http'))await page.goto('http://127.0.0.1:4173/');else await page.reload();await page.waitForFunction(()=>document.documentElement.dataset.ready==='true');
  const layouts=[];
  for(const width of [390,1100]){await page.setViewportSize({width,height:900});for(const name of ['PLAY','VOICES','CHORDS','DRUMS','PERFORM','DUCKING']){await page.getByRole('tab',{name,exact:true}).click();const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);check(!overflow,name+' overflows at'+width);layouts.push({width,page:name,overflow});}}
  await page.getByRole('tab',{name:'PLAY',exact:true}).click();await page.getByRole('button',{name:/START AUDIO/}).click();await page.waitForFunction(()=>window.pxlDub.stats.statuses>3);
