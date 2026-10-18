@@ -8,6 +8,8 @@ async (page) => {
  await page.evaluate(()=>window.pxlDub.context.suspend());await page.waitForFunction(()=>document.querySelector('#audio-status').textContent.includes('SUSPENDED'));await page.getByRole('button',{name:/^RUN/}).click();await page.waitForFunction(()=>document.querySelector('#audio-status').textContent.includes('RUNNING'));
  await page.getByRole('button',{name:'PANIC',exact:true}).click();await page.waitForFunction(()=>!document.querySelector('#audio-status').classList.contains('running'));
  await page.locator('#patch-file').setInputFiles({name:'bad.json',mimeType:'application/json',buffer:Buffer.from('{broken')});await page.waitForFunction(()=>document.querySelector('#notice').textContent.includes('Could not load patch'));
+ await page.locator('#tempo').fill('137.5');await page.locator('#tempo').press('Tab');await page.getByRole('tab',{name:'VOICES',exact:true}).click();check(Number(await page.locator('#page-1 input[data-control="TEMPO"]').inputValue())===137.5,'tempo controls disagree');
+ await page.getByRole('tab',{name:'DRUMS',exact:true}).click();await page.getByRole('button',{name:'EDIT ACCENTS',exact:true}).click();const before=await page.evaluate(()=>window.pxlDub.patch.params);await page.getByRole('button',{name:'KICK step 1',exact:true}).click();const after=await page.evaluate(()=>window.pxlDub.patch.params);check(after.some((v,i)=>v!==before[i]),'touch accents do not edit');
  const error=await page.evaluate(()=>window.pxlDub.stats.error);check(error===null,'runtime error:'+error);
- return {layouts,signal,resume:'passed',panic:'passed',malformedImport:'passed',runtimeError:error};
+ return {layouts,signal,resume:'passed',panic:'passed',malformedImport:'passed',fractionalTempo:'passed',touchAccents:'passed',runtimeError:error};
 }

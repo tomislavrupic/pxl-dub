@@ -22,10 +22,11 @@ class DubWorklet extends AudioWorkletProcessor {
     else if(m.type==='piece'){this.e.dub_piece(m.value);this.clearSource();}
     else if(m.type==='action'){this.e.dub_action(m.value);if(m.value===3){this.clearSource();this.envelopes.fill(0);this.peaks.fill(0);}}
     else if(m.type==='patch'){
-      const p=m.value;this.e.dub_action(3);this.e.dub_piece(p.piece);
+      const p=m.value;this.e.dub_init();this.e.dub_piece(p.piece);
       p.params.forEach((v,i)=>this.e.dub_set(i,v));p.ducks.forEach((v,i)=>this.e.dub_set_duck(i,v));
       this.e.dub_release(p.recovery);this.e.dub_tempo(p.tempo);
       this.e.dub_config(0,p.mutes);this.e.dub_config(1,p.scale);this.e.dub_config(2,p.hold?1:0);
+      this.e.dub_action(2); // Generate from the complete patch, then restore explicit saved loops.
       if(p.pings){new Uint8Array(this.e.memory.buffer,this.e.dub_pings(),82).set(p.pings);this.e.dub_restore_pings();}
       this.e.dub_play(m.play?1:0);this.clearSource();
     }

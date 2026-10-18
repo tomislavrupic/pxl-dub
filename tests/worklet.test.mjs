@@ -20,3 +20,10 @@ console.log('Worklet: audible finite audio at44.1/48/96kHz, stable tempo and pan
  p.process([], [buffers]);const loops=[...new Uint8Array(p.e.memory.buffer,p.e.dub_pings(),82)];
  assert.ok(loops.some(x=>x!==255),'factory patch inherited queued previous loops');
 }
+{
+ globalThis.sampleRate=44100;const p=new Processor({processorOptions:{module}});const metadata=JSON.parse(fs.readFileSync(new URL('../dist/metadata.json',import.meta.url)));
+ const params=[...metadata.pieces[0].params],index=key=>metadata.params.find(p=>p.key===key).id;
+ for(const [key,value] of Object.entries({ROOT:0,MODE:0,CR0:2,CQ0:1,CX0:0,PMODE:1}))params[index(key)]=value;
+ const patch={piece:0,params,ducks:[100,100,100,100,100,100],recovery:130,tempo:122,mutes:0,scale:0,hold:false,pings:null};
+ p.port.onmessage({data:{type:'patch',value:patch,play:false}});p.process([], [[new Float32Array(128),new Float32Array(128)]]);p.e.dub_status();assert.equal(p.status[8],2,'patch initial chord ignores its custom progression');
+}
