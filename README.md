@@ -1,5 +1,9 @@
 # PXL Dub Web
 
+Play and download: https://tomislavrupic.github.io/pxl-dub/
+
+GitHub Pages publishes `dist/` from `main` after the engine, worklet and patch tests pass. The workflow can also be run manually from Actions.
+
 The playable2126 instrument and native plugin landing/download page. Browser-local synthesis uses the exact PXL Dub engine in an AudioWorklet/WebAssembly module; no server audio, accounts or synth runtime dependencies are needed.
 
 Serve `dist/` over localhost/HTTPS, for example `npm run dev`, then open http://localhost:4173. Click Start audio. `npm test` checks native/Wasm PCM parity, rate adaptation and patch handling. `tests/browser-check.js` is a Playwright-page function for GUI checks. Standalone rebuilding: set WASI_SDK_PATH to the official WASI SDK34 installation and run tools/build-engine.sh.

@@ -12,7 +12,7 @@ with tempfile.TemporaryDirectory(prefix='download-',dir=native/'build') as temp:
   (binary/fmt).mkdir();shutil.copytree(native/f'build/install-{version}'/fmt/name,binary/fmt/name,symlinks=True)
  shutil.copy2(native/'tools/Install.command',binary/'Install.command')
  for name in ['LICENSE','THIRD-PARTY-NOTICES.md']:shutil.copy2(native/name,binary/name)
- (binary/'READ ME.txt').write_text('PXL Dub0.4.0 — Pixel Records\n\nApple Silicon, macOS12+, AU and VST3 stereo instrument.\nUnzip, run Install.command, then rescan plugins in your DAW. Existing versions are backed up. Start the host transport, or turn Host Sync off and use Run.\n\nDuck is master kick depth; the Ducking tab has individual amounts for Chord, Pings, Bass, Percussion, Vinyl and Space. Kick stays full.\n\nLocal ad-hoc signed build; not notarized.\nCorresponding source and licenses: https://pxl-dub.tomislavrupic.chatgpt.site/#download\n')
+ (binary/'READ ME.txt').write_text('PXL Dub0.4.0 — Pixel Records\n\nApple Silicon, macOS12+, AU and VST3 stereo instrument.\nUnzip, run Install.command, then rescan plugins in your DAW. Existing versions are backed up. Start the host transport, or turn Host Sync off and use Run.\n\nDuck is master kick depth; the Ducking tab has individual amounts for Chord, Pings, Bass, Percussion, Vinyl and Space. Kick stays full.\n\nLocal ad-hoc signed build; not notarized.\nCorresponding source and licenses: https://tomislavrupic.github.io/pxl-dub/#download\n')
  subprocess.run(['ditto','-c','-k','--keepParent',str(binary),str(downloads/(binary.name+'.zip'))],check=True)
  source=temp/f'PXL-Dub-{version}-source';source.mkdir()
  for p in native.iterdir():
