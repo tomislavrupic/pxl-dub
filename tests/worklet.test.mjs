@@ -1,0 +1,13 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';
+const module=await WebAssembly.compile(fs.readFileSync(new URL('../dist/engine.wasm',import.meta.url)));
+let Processor;globalThis.AudioWorkletProcessor=class{constructor(){this.port={onmessage:null,postMessage:()=>{}}}};
+globalThis.registerProcessor=(name,Type)=>{Processor=Type};
+await import('../dist/audio-worklet.js');
+for(const rate of [44100,48000,96000]){
+ globalThis.sampleRate=rate;const p=new Processor({processorOptions:{module}});p.port.onmessage({data:{type:'play',value:true}});
+ let energy=0;const buffers=[new Float32Array(128),new Float32Array(128)];
+ for(let b=0;b<Math.ceil(rate/128);++b){assert.equal(p.process([], [buffers]),true);for(const channel of buffers)for(const x of channel){assert.ok(Number.isFinite(x)&&Math.abs(x)<=1);energy+=x*x;}}
+ assert.ok(energy>.01);assert.ok(Math.abs(p.e.dub_status()&&p.status[7]-8)<2,'rate changes tempo');
+ p.port.onmessage({data:{type:'action',value:3}});let tail=0;for(let b=0;b<10;++b){p.process([], [buffers]);for(const x of buffers[0])tail+=x*x;}assert.ok(tail<1e-10,'panic left buffered audio');
+}
+console.log('Worklet: audible finite audio at44.1/48/96kHz, stable tempo and panic passed');
