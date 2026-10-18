@@ -6,11 +6,12 @@ class DubWorklet extends AudioWorkletProcessor {
     this.audio=new Int32Array(this.e.memory.buffer,this.e.dub_audio(),128);
     this.status=new Float32Array(this.e.memory.buffer,this.e.dub_status(),227);
     this.left=new Float32Array(512);this.right=new Float32Array(512);this.available=0;this.phase=1;
-    this.ratio=44100/sampleRate;this.elapsed=0;this.peaks=new Float32Array(7);this.envelopes=new Float32Array(7);
+    this.ratio=44100/sampleRate;this.elapsed=0;this.generation=0;this.peaks=new Float32Array(7);this.envelopes=new Float32Array(7);
     this.pool=[new Float32Array(227),new Float32Array(227),new Float32Array(227)];
     this.port.onmessage=event=>this.message(event.data);
   }
   message(m) {
+    if(Number.isInteger(m.generation))this.generation=m.generation;
     if(m.type==='buffer'){this.pool.push(new Float32Array(m.data));return;}
     if(m.type==='param')this.e.dub_set(m.index,m.value);
     else if(m.type==='duck')this.e.dub_set_duck(m.index,m.value);
@@ -48,7 +49,7 @@ class DubWorklet extends AudioWorkletProcessor {
     if(this.elapsed>=sampleRate/24){
       const decay=Math.exp(-this.elapsed/(sampleRate*.16));this.elapsed=0;
       for(let i=0;i<7;++i){this.envelopes[i]=Math.max(this.peaks[i],this.envelopes[i]*decay);this.peaks[i]=0;}
-      if(this.pool.length){const snapshot=this.pool.pop();snapshot.set(this.status);snapshot.set(this.envelopes,0);this.port.postMessage({type:'status',data:snapshot.buffer},[snapshot.buffer]);}
+      if(this.pool.length){const snapshot=this.pool.pop();snapshot.set(this.status);snapshot.set(this.envelopes,0);this.port.postMessage({type:'status',generation:this.generation,data:snapshot.buffer},[snapshot.buffer]);}
     }
     return true;
   }

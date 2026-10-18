@@ -35,5 +35,6 @@ const char* dub_piece_name(int p){return p>=0&&p<8?engine.en_piece_name(p):"";}
 const char* dub_voice_name(int layer,int p){return layer==0?engine.EN_CV_NAME[p<0?0:p>6?6:p]:layer==1?engine.EN_PV_NAME[p<0?0:p>4?4:p]:layer==2?engine.EN_BV_NAME[p<0?0:p>4?4:p]:engine.EN_KIT_NAME[p<0?0:p>4?4:p];}
 const char* dub_mode_name(int p){return engine.EN_MODE_NAME[p<0?0:p>7?7:p];}
 int dub_mode_pool(int p){return engine.EN_MODE_POOL[p<0?0:p>7?7:p];}
+const char* dub_chord_text(int root,int a,int b,int c,int d){int pitches[]{root,a%12,b%12,c%12,d%12};engine.en_chord_name(pitches,5,formatted);return formatted;}
 const char* dub_effect_name(int p){return engine.EN_FX_NAME[p<0?0:p>15?15:p];}
 }

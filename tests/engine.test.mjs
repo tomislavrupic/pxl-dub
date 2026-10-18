@@ -13,3 +13,4 @@ const expected=readFileSync(new URL('./native-oracle.pcm',import.meta.url));
 assert.equal(Buffer.from(new Int32Array(samples).buffer).compare(expected),0,'Wasm sound differs from native bridge');
 e.dub_set_duck(0,0);e.dub_release(800);for(let i=0;i<100;++i)e.dub_render();
 console.log('Wasm: no imports, finite audible render, exact native parity and duck controls passed');
+const pointer=e.dub_chord_text(0,60,63,67,70);const memory=new Uint8Array(e.memory.buffer);let end=pointer;while(memory[end])end++;assert.equal(new TextDecoder().decode(memory.subarray(pointer,end)),'Cm7','chord label lost quality');

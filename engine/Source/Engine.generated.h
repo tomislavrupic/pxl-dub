@@ -2899,7 +2899,9 @@ void render_chunk(int32_t *out, uint32_t n, float gain)
         }
         visualPeak[4] = fm_maxf(visualPeak[4], fm_maxf(fm_fabsf(1.2f * el + 0.25f * xl + 1.1f * wl + 1.4f * cl),
                                                    fm_fabsf(1.2f * er + 0.25f * xr + 1.1f * wr + 1.4f * cr)) * (1.0f - reduction * (nativeDucking ? layerDuck[5] : 1.0f)) * 0.5f * gain);
-        visualReduction = fm_maxf(visualReduction, 1.0f - dg);
+        float activeAmount = 1.0f;
+        if (nativeDucking) { activeAmount = 0.0f; for (float amount : layerDuck) activeAmount = fm_maxf(activeAmount, amount); }
+        visualReduction = fm_maxf(visualReduction, reduction * activeAmount);
         if (shut > 0.01f) {
             float bp;
             l = svf_lp(mb_c, mb_s, l, &bp);
